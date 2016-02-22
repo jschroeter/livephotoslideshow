@@ -11,6 +11,7 @@ var port = process.env.PORT || 3000;
 server.listen(port);
 
 var imageFolder = process.argv[2];
+var imageExtentions = ['.jpg', '.jpeg', '.png', 'gif', '.webp', '.svg'];
 
 // serve jquery and normalize.css
 app.use('/jquery', express.static(__dirname + '/node_modules/jquery/dist/'));
@@ -26,6 +27,9 @@ app.get('/', function (req, res) {
     res.sendfile(__dirname + '/public/index.html');
 });
 
+
+var allImages = [];
+
 // init file watcher
 var watcher = chokidar.watch(imageFolder, {
     ignored: /[\/\\]\./,
@@ -34,21 +38,28 @@ var watcher = chokidar.watch(imageFolder, {
 
 // init websocket
 io.sockets.on('connection', function (socket) {
-    console.log('new client connected');
+    console.log('new client connected (total: ' + io.engine.clientsCount + ')');
 
     // send all currently available images
-    //socket.emit('allImages', { src: path, timestamp: new Date() });
+    socket.emit('allImages', allImages);
 });
-
 
 // notify clients when a new image is added
 watcher.on('add', function (filePath) {
+    if (imageExtentions.indexOf(path.extname(filePath).toLowerCase()) === -1) {
+        return;
+    }
+
     var relativeFilePath = path.relative(imageFolder, filePath);
     console.log('found new file: ' + relativeFilePath);
 
-    var src = 'images/' + relativeFilePath;
-    var timestamp = fs.statSync(filePath).mtime;
-    io.sockets.emit('newImage', {src: src, timestamp: timestamp});
+    var image = {
+        src: 'images/' + relativeFilePath,
+        timestamp: fs.statSync(filePath).mtime
+    };
+    io.sockets.emit('newImage', image);
+
+    allImages.push(image);
 });
 
 
