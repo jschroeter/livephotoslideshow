@@ -40,7 +40,7 @@ body {
     margin-top: -50vh;
     opacity: 0;
     transition-property: opacity, transform;
-    transition-duration: 3s, 10s;
+    transition-duration: 3s, 13s;
     transition-timing-function: linear;
 }
 
@@ -69,16 +69,6 @@ body {
 
 #slideShow > .fx-br {
     transform-origin: bottom right;
-}
-
-/**
- * Because of the stacking context, we need to make sure that the first image (in source) is not hidden by the last one.
- * The rule below moves all images past the second one down the stack.
- * This is because the second image needs to show on top of the first one when it transitions in.
- */
-
-#slideShow > .fx:first-child + li ~ li {
-    z-index: -1;
 }
 
 /**

@@ -26,22 +26,21 @@
         var imageEl = document.createElement('img');
         imageEl.setAttribute('src', image.src);
 
+        // apply random transform origin, just for some variation
+        listEl.classList.add(['fx-bl', 'fx-tr', 'fx-tl', 'fx-br'][Math.floor(Math.random() * 4)]);
+
         imageEl.addEventListener('load', function () {
-            // make image visible after it's loaded
-            listEl.classList.add('fx');
+            // make image visible after it's loaded; little timeout needed to trigger the transition when image is in cache
+            window.setTimeout(function () {
+                listEl.classList.add('fx');
+            }, 50);
 
-            // apply random transform origin, just for some variation
-            listEl.classList.add(['fx-bl', 'fx-tr', 'fx-tl', 'fx-br'][Math.floor(Math.random() * 4)]);
-
-            // remove invisible images to reduce memory usage
-            if (slideShowEl.childElementCount > 2) {
-                if (!slideShowEl.children[0].classList.contains('fx')) {
+            // remove invisible (after opacity transition ended) images to reduce memory usage
+            window.setTimeout(function () {
+                if (slideShowEl.childElementCount >= 2) {
                     slideShowEl.removeChild(slideShowEl.children[0]);
                 }
-
-                slideShowEl.children[0].classList.remove('fx');
-            }
-
+            }, 3500);
         });
 
         listEl.appendChild(imageEl);
