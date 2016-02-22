@@ -1,16 +1,91 @@
-#images {
-    width: 100%;
-    padding: 0;
-    margin: 0;
+body {
+    background: #000;
+}
+
+/**
+ * transition effect inspired by http://www.css-101.org/articles/ken-burns_effect/css-transition.php
+ */
+
+/**
+ * Styling the container (the wrapper)
+ *
+ * position is used to make this box a containing block (it becomes a reference for its absolutely positioned children). overflow will hide part of the images moving outside of the box.
+ */
+
+#slideShow {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
     list-style: none;
-}
-
-#images > li {
-    width: 100%;
     padding: 0;
     margin: 0;
 }
 
-#images > li > img {
+/**
+ * Styling the images
+ *
+ * position:absolute is to put all images in a stack. Dimensions are set to increase the size of these images so their edges do not appear in the parent box when we move them inside the said box.
+ * Because the images are now larger than their parent container, we use top, left and margin values to align them in the center of the box.
+ * Finally, we set the transition (property and duration). Note that duration values are different for opacity and transform as we want the "fade-in" effect to be faster than the "panning" effect.
+ */
+
+#slideShow > li {
+    position: absolute;
+    width: 100vw;
+    height: 100vh;
+    top: 50%;
+    left: 50%;
+    margin-left: -50vw;
+    margin-top: -50vh;
+    opacity: 0;
+    transition-property: opacity, transform;
+    transition-duration: 3s, 10s;
+    transition-timing-function: linear;
+}
+
+#slideShow > li > img {
     width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/**
+ * We change the point of origin using four corners so images do not move in the same direction.
+ * This technique allows us to create various paths while applying the same translate() values to all images (see the 'fx' class further below).
+ */
+
+#slideShow > .fx-bl {
+    transform-origin: bottom left;
+}
+
+#slideShow > .fx-tr {
+    transform-origin: top right;
+}
+
+#slideShow > .fx-tl {
+    transform-origin: top left;
+}
+
+#slideShow > .fx-br {
+    transform-origin: bottom right;
+}
+
+/**
+ * Because of the stacking context, we need to make sure that the first image (in source) is not hidden by the last one.
+ * The rule below moves all images past the second one down the stack.
+ * This is because the second image needs to show on top of the first one when it transitions in.
+ */
+
+#slideShow > .fx:first-child + li ~ li {
+    z-index: -1;
+}
+
+/**
+ * Because images are styled with a different point of origin, the following rule will create different panning effects.
+ */
+
+#slideShow > .fx {
+    opacity: 1;
+    transform: scale(1.1);
 }
