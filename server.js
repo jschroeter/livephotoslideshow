@@ -52,14 +52,16 @@ watcher.on('add', function (filePath) {
     var relativeFilePath = path.relative(imageFolder, filePath);
     console.log('found new file: ' + relativeFilePath);
 
-    var image = {
-        src: 'images/' + relativeFilePath,
-        date: fs.statSync(filePath).mtime,
-        showCount: 0
-    };
-    io.sockets.emit('newImage', image);
+    fs.stat(filePath, function (err, stats) {
+        var image = {
+            src: 'images/' + relativeFilePath,
+            date: stats.mtime,
+            showCount: 0
+        };
+        io.sockets.emit('newImage', image);
 
-    allImages.push(image);
+        allImages.push(image);
+    });
 });
 
 
