@@ -11,7 +11,7 @@ var port = process.env.PORT || 3000;
 server.listen(port);
 
 var imageFolder = process.argv[2];
-var imageExtentions = ['.jpg', '.jpeg', '.png', 'gif', '.webp', '.svg'];
+var imageExtentions = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.svg'];
 
 // serve jquery and normalize.css
 app.use('/normalize.css', express.static(__dirname + '/node_modules/normalize.css/'));
