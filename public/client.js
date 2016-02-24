@@ -5,17 +5,17 @@
     var slideShowEl = document.getElementById('slideShow');
 
     var getNextImage = function () {
-        // sort all images by showCount and date, so images which were shown less often will get priority
+        // sort all images by modification date and last shown date, so new images will get priority
         allImages.sort(function(a, b) {
-            if (a.showCount === b.showCount) {
+            if (a.lastShown === b.lastShown) {
                 return new Date(a.date) - new Date(b.date);
             } else {
-                return a.showCount - b.showCount;
+                return a.lastShown - b.lastShown;
             }
         });
 
         var nextImage = allImages[0];
-        nextImage.showCount++;
+        nextImage.lastShown = Date.now();
 
         return nextImage;
     };

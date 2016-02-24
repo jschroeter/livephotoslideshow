@@ -13,7 +13,7 @@ server.listen(port);
 var imageFolder = process.argv[2];
 var imageExtentions = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.svg'];
 
-// serve jquery and normalize.css
+// serve normalize.css
 app.use('/normalize.css', express.static(__dirname + '/node_modules/normalize.css/'));
 // serve static files
 app.use(express.static(__dirname + '/public'));
@@ -56,7 +56,7 @@ watcher.on('add', function (filePath) {
         var image = {
             src: 'images/' + relativeFilePath,
             date: stats.mtime,
-            showCount: 0
+            lastShown: 0
         };
         io.sockets.emit('newImage', image);
 
