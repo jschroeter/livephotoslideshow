@@ -5,3 +5,7 @@ Simplistic node.js app which shows images in a specified folder as a slideshow -
 `npm install`
 
 `node server.js /path/to/images`
+
+or
+
+`node server.js /path/to/images --recursive`

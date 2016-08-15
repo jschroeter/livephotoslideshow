@@ -5,12 +5,13 @@ var server = require('http').createServer(app);
 var io = require('socket.io').listen(server);
 var path = require('path');
 var fs = require('fs');
+var argv = require('minimist')(process.argv.slice(2));
 
 // setup webserver port
 var port = process.env.PORT || 3000;
 server.listen(port);
 
-var imageFolder = process.argv[2];
+var imageFolder = argv._[0];
 var imageExtentions = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.svg'];
 
 // serve normalize.css
@@ -32,6 +33,7 @@ var allImages = [];
 // init file watcher
 var watcher = chokidar.watch(imageFolder, {
     ignored: /[\/\\]\./,
+    depth: argv.recursive ? undefined : 0,
     persistent: true
 });
 
