@@ -2,7 +2,7 @@ var chokidar = require('chokidar');
 var express = require('express');
 var app = express();
 var server = require('http').createServer(app);
-var io = require('socket.io').listen(server);
+var io = require('socket.io')(server);
 var path = require('path');
 var fs = require('fs');
 var argv = require('minimist')(process.argv.slice(2));
@@ -12,10 +12,10 @@ var port = process.env.PORT || 3000;
 server.listen(port);
 
 var imageFolder = argv._[0];
-var imageExtentions = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.svg'];
+var imageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.svg'];
 
-// serve normalize.css
-app.use('/normalize.css', express.static(__dirname + '/node_modules/normalize.css/'));
+// serve modern-normalize
+app.use('/modern-normalize', express.static(__dirname + '/node_modules/modern-normalize/'));
 // serve static files
 app.use(express.static(__dirname + '/public'));
 // serve image folder
@@ -38,16 +38,16 @@ var watcher = chokidar.watch(imageFolder, {
 });
 
 // init websocket
-io.sockets.on('connection', function (socket) {
+io.on('connection', function (client) {
     console.log('new client connected (total: ' + io.engine.clientsCount + ')');
 
     // send all currently available images
-    socket.emit('allImages', allImages);
+    client.emit('allImages', allImages);
 });
 
 // notify clients when a new image is added
 watcher.on('add', function (filePath) {
-    if (imageExtentions.indexOf(path.extname(filePath).toLowerCase()) === -1) {
+    if (imageExtensions.indexOf(path.extname(filePath).toLowerCase()) === -1) {
         return;
     }
 
@@ -60,7 +60,7 @@ watcher.on('add', function (filePath) {
             date: stats.mtime,
             lastShown: 0
         };
-        io.sockets.emit('newImage', image);
+        io.emit('newImage', image);
 
         allImages.push(image);
     });
